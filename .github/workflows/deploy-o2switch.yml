@@ -1,26 +1,48 @@
-name: SSH and Run npm install
-
-on: [push]
+name: 🚀 Build and Deploy Nuxt.js 3 App to o2switch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build
+    name: 🏗️ Build
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Install SSH Key
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          node-version: 18
 
-      - name: Run Commands Over SSH
-        uses: appleboy/ssh-action@master
+      - name: 🛠️ Build App
+        run: npm run build
+
+      - name: 🗑️ Remove node_modules from .output/server
+        run: rm -rf .output/server/node_modules
+
+      - name: 📝 Modify package.json
+        run: |
+          mv .output/server/package.json .output/package.json
+          jq '.bundledDependencies |= . as $o | .dependencies = $o | del(.bundledDependencies)' .output/package.json > .output/temp.json
+          mv .output/temp.json .output/package.json
+
+      - name: 📝 Create server.js
+        run: echo "import('./server/index.mjs');" > .output/server.js
+
+      - name: 📤 Deploy to FTP server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /nuxt.dibodev.com
-            npm install
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          protocol: ftp
+          local-dir: ./.output/
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
