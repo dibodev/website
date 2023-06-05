@@ -36,7 +36,7 @@ export default defineNuxtConfig({
   },
   i18n: {
     lazy: true,
-    strategy: 'prefix_and_default',
+    strategy: 'prefix',
     langDir: 'locales',
     locales: [
       {
@@ -56,7 +56,6 @@ export default defineNuxtConfig({
         file: 'es.json'
       }
     ],
-    defaultLocale: 'fr',
     detectBrowserLanguage: {
       fallbackLocale: 'fr',
       useCookie: false,
