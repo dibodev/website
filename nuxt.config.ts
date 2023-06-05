@@ -56,10 +56,9 @@ export default defineNuxtConfig({
         file: 'es.json'
       }
     ],
+    defaultLocale: 'fr',
     detectBrowserLanguage: {
-      fallbackLocale: 'fr',
       useCookie: false,
-      alwaysRedirect: true,
       cookieKey: 'i18n_redirected',
       redirectOn: 'all'
     }
