@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { siteUrl } from './utils/app.infos'
+
 export default defineNuxtConfig({
   ssr: true,
   typescript: {
@@ -38,16 +39,30 @@ export default defineNuxtConfig({
     strategy: 'prefix_and_default',
     langDir: 'locales',
     locales: [
-      { code: 'fr', iso: 'fr-FR', file: 'fr.json', isCatchallLocale: true },
-      { code: 'en', iso: 'en-Us', file: 'en.json' },
-      { code: 'es', iso: 'es-ES', file: 'es.json' }
+      {
+        code: 'fr',
+        iso: 'fr-FR',
+        file: 'fr.json',
+        isCatchallLocale: true
+      },
+      {
+        code: 'en',
+        iso: 'en-Us',
+        file: 'en.json'
+      },
+      {
+        code: 'es',
+        iso: 'es-ES',
+        file: 'es.json'
+      }
     ],
     defaultLocale: 'fr',
     detectBrowserLanguage: {
       fallbackLocale: 'fr',
-      useCookie: true,
+      useCookie: false,
+      alwaysRedirect: true,
       cookieKey: 'i18n_redirected',
-      redirectOn: 'root'
+      redirectOn: 'all'
     }
   },
   devtools: {
