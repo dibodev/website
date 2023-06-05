@@ -1,4 +1,5 @@
+import { siteUrl, siteName } from './utils/app.infos'
 export default defineAppConfig({
-  name: 'Dibodev',
-  url: import.meta.env.VITE_PRODUCTION_URL
+  name: siteName,
+  url: siteUrl
 })
