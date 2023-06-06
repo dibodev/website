@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
+    '@nuxtjs/plausible',
     '@nuxtjs/i18n',
     'nuxt-simple-sitemap',
     'nuxt-simple-robots',
