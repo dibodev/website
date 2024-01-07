@@ -27,8 +27,8 @@ jobs:
       - name: 🛠️ Build App
         run: npm run build
 
-      - name: 🗑️ Remove node_modules from .output/server
-        run: rm -rf .output/server/node_modules
+      - name: 🚚 Move node_modules
+        run: mv .output/server/node_modules .output/
 
       - name: 📝 Modify package.json
         run: |
@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ".output/"
           target: "/var/www/dibodev.com/html"
-      - name: 🚀 Install Dependencies and Restart Server
+      - name: 🚀 Restart Server with PM2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -57,7 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/dibodev.com/html/.output
-            npm install
-            pm2 restart my-nuxt-app || pm2 start server.js --name my-nuxt-app
+            pm2 restart dibodev.com || pm2 start server.js --name dibodev.com
+
         
 
