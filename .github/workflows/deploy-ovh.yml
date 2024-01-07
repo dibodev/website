@@ -48,4 +48,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ".output/"
           target: "/var/www/dibodev.com/html"
+      - name: 🚀 Install Dependencies and Restart Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/dibodev.com/html/.output
+            npm install
+            pm2 restart my-nuxt-app || pm2 start server.js --name my-nuxt-app
+        
 
