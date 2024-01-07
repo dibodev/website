@@ -20,16 +20,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-
-      - name: 📦 Install dependencies
-        run: npm ci
-
+          
       - name: 🛠️ Build App
         run: npm run build
-
-      - name: 🚚 Move node_modules
-        run: mv .output/server/node_modules .output/
-
+        
       - name: 📝 Modify package.json
         run: |
           mv .output/server/package.json .output/package.json
@@ -48,7 +42,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: ".output/"
           target: "/var/www/dibodev.com/html"
-      - name: 🚀 Restart Server with PM2
+      
+      - name: 🚀 Install dependencies and restart Server with PM2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -57,6 +52,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/dibodev.com/html/.output
+            npm install
             pm2 restart dibodev.com || pm2 start server.js --name dibodev.com
 
         
