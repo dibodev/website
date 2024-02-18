@@ -78,4 +78,7 @@
 
   // Écoute des événements beforeunload pour détecter lorsque l'utilisateur quitte la page
   window.addEventListener('beforeunload', () => onLeave('beforeunload'))
+
+  // For ios
+    window.addEventListener('pagehide', () => onLeave('pagehide'))
 })()
