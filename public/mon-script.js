@@ -10,6 +10,8 @@ window.addEventListener('pagehide ', () => {
 
 })
 
+confirm('v3')
+
 function confirmFirst(eventName) {
   if(confirm("Leave the page?" + eventName)){
     console.log("You are leaving the page")
