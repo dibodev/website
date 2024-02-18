@@ -24,8 +24,24 @@
     const data = { domain: `p-${eventName}-${Math.random()}` }
     const headers = { type: 'application/json' }
     const blob = new Blob([JSON.stringify(data)], headers)
+    let eventIsSent = false
 
-    if (window.fetch) {
+    if (navigator.sendBeacon && Blob.prototype.isPrototypeOf(blob)) {
+      console.log('sendBeacon')
+      const beaconSent = navigator.sendBeacon(apiUrl, blob)
+
+      if (!beaconSent) {
+        console.log('!beaconSent')
+        try {
+            createProject()
+            eventIsSent = true
+        } catch {
+          console.warn('sendBeacon failed')
+        }
+      }
+    }
+
+    if (!eventIsSent && window.fetch) {
       console.log('fetch')
       await fetch(apiUrl, {
         body: JSON.stringify(data),
@@ -35,18 +51,12 @@
         method: 'POST',
         keepalive: true,
       })
-    } else if (navigator.sendBeacon && Blob.prototype.isPrototypeOf(blob)) {
-        console.log('sendBeacon')
-      const beaconSent = navigator.sendBeacon(apiUrl, blob)
+    }
 
-      if (!beaconSent) {
-        console.log('!beaconSent')
-        createProject()
-      }
-    } else {
+    if (!eventIsSent) {
         console.log('else')
-      // Si ni fetch ni sendBeacon ne sont disponibles, utilisez XMLHttpRequest
-      createProject()
+        // Si ni fetch ni sendBeacon ne sont disponibles, utilisez XMLHttpRequest
+        createProject()
     }
   }
 
