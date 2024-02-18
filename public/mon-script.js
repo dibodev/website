@@ -1,7 +1,17 @@
-window.onbeforeunload = confirmFirst;
+window.addEventListener('popstate', () => {
+    confirmFirst('popstate')
+})
+window.addEventListener('beforeunload', () => {
+    confirmFirst('beforeunload')
+})
 
-function confirmFirst() {
-  if(confirm("Leave the page?")){
+window.addEventListener('pagehide ', () => {
+    confirmFirst('pagehide')
+
+})
+
+function confirmFirst(eventName) {
+  if(confirm("Leave the page?" + eventName)){
     console.log("You are leaving the page")
   }else{
     return false;
