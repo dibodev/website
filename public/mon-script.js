@@ -81,4 +81,10 @@
 
   // For ios
     window.addEventListener('pagehide', () => onLeave('pagehide'))
+
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      onLeave('visibilitychange');
+    }
+  });
 })()
