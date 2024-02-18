@@ -1,73 +1,60 @@
-// window.addEventListener('popstate', () => {
-//     confirmFirst('popstate')
-// })
-// window.addEventListener('beforeunload', () => {
-//     confirmFirst('beforeunload')
-// })
+;(function () {
+  const apiUrl = 'https://analytics.dibodev.com/projects'
 
-// window.addEventListener('pagehide', () => {
-//     confirmFirst('pagehide')
-//
-// })
-//
-// confirm('v4')
-//
-// function confirmFirst(eventName) {
-//   if(confirm("Leave the page?" + eventName)){
-//     console.log("You are leaving the page")
-//   }else{
-//     return false;
-//   }
-// }
+  function createProject(callback = null) {
+    const data = { domain: `onleave${Math.random()}` }
 
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', apiUrl, true)
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText)
+        if (callback) {
+          callback(response)
+        }
+      }
+    }
+    xhr.send(JSON.stringify(data))
+  }
 
-document.addEventListener("unload", () => {
-  fetch('https://analytics.dibodev.com/projects', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ domain: `unload${Math.random()}` })
-  }).then(res => res.json())
-    .then(res => console.log(res));
-});
+  async function onLeave(eventName) {
+    const data = { domain: `p-${eventName}-${Math.random()}` }
+    const headers = { type: 'application/json' }
+    const blob = new Blob([JSON.stringify(data)], headers)
 
-
-document.addEventListener("beforeunload",() => {
-    fetch('https://analytics.dibodev.com/projects', {
+    if (window.fetch) {
+      await fetch(apiUrl + '/leave', {
+        body: JSON.stringify(data),
         method: 'POST',
-        headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ domain: `beforeunload${Math.random()}` })
-    }).then(res => res.json())
-        .then(res => console.log(res));
-})
+        keepalive: true,
+      })
+    } else if (navigator.sendBeacon && Blob.prototype.isPrototypeOf(blob)) {
+      const beaconSent = navigator.sendBeacon(apiUrl + '/leave', blob)
 
-window.addEventListener('popstate', () => {
-    fetch('https://analytics.dibodev.com/projects', {
-        method: 'POST',
-        headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ domain: `popstate${Math.random()}` })
-    }).then(res => res.json())
-        .then(res => console.log(res));
+      if (!beaconSent) {
+        createProject()
+      }
+    } else {
+      // Si ni fetch ni sendBeacon ne sont disponibles, utilisez XMLHttpRequest
+      createProject()
+    }
+  }
 
-})
+  const pushStateEvent = new Event('pushstate')
 
-// ios safari does not support pagehide
-window.addEventListener('pagehide', () => {
-  fetch('https://analytics.dibodev.com/projects', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ domain: `pagehide${Math.random()}` })
-  }).then(res => res.json())
-    .then(res => console.log(res));
-})
+  window.addEventListener('pushstate', () => onLeave('pushstate'))
+
+  // Modification de history.pushState pour déclencher un événement à chaque fois qu'il est appelé
+  const originalPushState = history.pushState
+  history.pushState = function () {
+    originalPushState.apply(this, arguments)
+    window.dispatchEvent(pushStateEvent)
+  }
+
+  // Écoute des événements popstate pour détecter les navigations via la barre d'URL ou le bouton retour
+  window.addEventListener('popstate', () => onLeave('popstate'))
+
+  // Écoute des événements beforeunload pour détecter lorsque l'utilisateur quitte la page
+  window.addEventListener('beforeunload', () => onLeave('beforeunload'))
+})()
