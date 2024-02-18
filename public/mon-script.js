@@ -1,16 +1,16 @@
-window.addEventListener('popstate', () => {
-    confirmFirst('popstate')
-})
-window.addEventListener('beforeunload', () => {
-    confirmFirst('beforeunload')
-})
+// window.addEventListener('popstate', () => {
+//     confirmFirst('popstate')
+// })
+// window.addEventListener('beforeunload', () => {
+//     confirmFirst('beforeunload')
+// })
 
-window.addEventListener('pagehide ', () => {
+window.addEventListener('pagehide', () => {
     confirmFirst('pagehide')
 
 })
 
-confirm('v3')
+confirm('v4')
 
 function confirmFirst(eventName) {
   if(confirm("Leave the page?" + eventName)){
