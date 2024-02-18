@@ -22,8 +22,39 @@
 
 
 document.addEventListener("unload", () => {
-  console.log("unload")
-  fetch('https://jsonplaceholder.typicode.com/todos/1')
-    .then(response => response.json())
-    .then(json => console.log(json))
+  fetch('https://analytics.dibodev.com/projects', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ domain: `unload${Math.random()}` })
+  }).then(res => res.json())
+    .then(res => console.log(res));
 });
+
+
+document.addEventListener("visibilitychange",() => {
+    fetch('https://analytics.dibodev.com/projects', {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ domain: `visibilitychange${Math.random()}` })
+    }).then(res => res.json())
+        .then(res => console.log(res));
+})
+
+// ios safari does not support pagehide
+window.addEventListener('pagehide', () => {
+  fetch('https://analytics.dibodev.com/projects', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ domain: `pagehide${Math.random()}` })
+  }).then(res => res.json())
+    .then(res => console.log(res));
+})
