@@ -38,6 +38,8 @@
         } catch {
           console.warn('sendBeacon failed')
         }
+      } else {
+        eventIsSent = true
       }
     }
 
