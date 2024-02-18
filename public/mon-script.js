@@ -2,7 +2,8 @@
   const apiUrl = 'https://analytics.dibodev.com/projects'
 
   function createProject(callback = null) {
-    const data = { domain: `onleave${Math.random()}` }
+    console.log('createProject')
+    const data = { domain: `createProject${Math.random()}` }
 
     const xhr = new XMLHttpRequest()
     xhr.open('POST', apiUrl, true)
@@ -19,23 +20,28 @@
   }
 
   async function onLeave(eventName) {
+    console.log('onLeave')
     const data = { domain: `p-${eventName}-${Math.random()}` }
     const headers = { type: 'application/json' }
     const blob = new Blob([JSON.stringify(data)], headers)
 
     if (window.fetch) {
+      console.log('fetch')
       await fetch(apiUrl + '/leave', {
         body: JSON.stringify(data),
         method: 'POST',
         keepalive: true,
       })
     } else if (navigator.sendBeacon && Blob.prototype.isPrototypeOf(blob)) {
+        console.log('sendBeacon')
       const beaconSent = navigator.sendBeacon(apiUrl + '/leave', blob)
 
       if (!beaconSent) {
+        console.log('!beaconSent')
         createProject()
       }
     } else {
+        console.log('else')
       // Si ni fetch ni sendBeacon ne sont disponibles, utilisez XMLHttpRequest
       createProject()
     }
