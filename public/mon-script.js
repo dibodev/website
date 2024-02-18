@@ -27,14 +27,14 @@
 
     if (window.fetch) {
       console.log('fetch')
-      await fetch(apiUrl + '/leave', {
+      await fetch(apiUrl, {
         body: JSON.stringify(data),
         method: 'POST',
         keepalive: true,
       })
     } else if (navigator.sendBeacon && Blob.prototype.isPrototypeOf(blob)) {
         console.log('sendBeacon')
-      const beaconSent = navigator.sendBeacon(apiUrl + '/leave', blob)
+      const beaconSent = navigator.sendBeacon(apiUrl, blob)
 
       if (!beaconSent) {
         console.log('!beaconSent')
