@@ -3,6 +3,7 @@
     <Html :lang="lang" :dir="dir">
       <Head>
         <Title>{{ title }} | {{ app.name }}</Title>
+        <Script src="/mon-script.js" />
         <template v-for="link in head.link" :key="link.id">
           <Link :id="link.id" :rel="link.rel" :href="link.href" :hreflang="link.hreflang" />
         </template>
