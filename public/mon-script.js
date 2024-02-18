@@ -34,16 +34,29 @@ document.addEventListener("unload", () => {
 });
 
 
-document.addEventListener("visibilitychange",() => {
+document.addEventListener("beforeunload",() => {
     fetch('https://analytics.dibodev.com/projects', {
         method: 'POST',
         headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ domain: `visibilitychange${Math.random()}` })
+        body: JSON.stringify({ domain: `beforeunload${Math.random()}` })
     }).then(res => res.json())
         .then(res => console.log(res));
+})
+
+window.addEventListener('popstate', () => {
+    fetch('https://analytics.dibodev.com/projects', {
+        method: 'POST',
+        headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ domain: `popstate${Math.random()}` })
+    }).then(res => res.json())
+        .then(res => console.log(res));
+
 })
 
 // ios safari does not support pagehide
