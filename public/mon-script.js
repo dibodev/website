@@ -29,6 +29,9 @@
       console.log('fetch')
       await fetch(apiUrl, {
         body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
         keepalive: true,
       })
