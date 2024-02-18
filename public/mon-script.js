@@ -21,6 +21,6 @@
 // }
 
 
-document.addEventListener("visibilitychange", () => {
-  alert(document.hidden)
+document.addEventListener("unload", () => {
+  alert("unload")
 });
